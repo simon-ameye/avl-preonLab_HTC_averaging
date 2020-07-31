@@ -16,7 +16,7 @@ X,Y,Z,REF_TEMP,CONV_HTC,HEAT_FLUX
 -0.002783718053251505,-0.06720457971096039,-0.08050017058849335,120.0,520.2167205810547,-15294.368041992188
 ...
 
--Make sure HF sensors activity is on for the last rotation and inactive outside.
--Make sure the HF sensors are linked with MeasuredScalarValue with a reference sensor plane (for global HTCs).
--Also make sure that current_dir and scene_name are filled.
--Of course, make sure that each sensor has data (is post processed) in your PreonLab scene, at least during activity.
+- Make sure HF sensors activity is on for the last rotation and inactive outside.
+- Make sure the HF sensors are linked with MeasuredScalarValue with a reference sensor plane (for global HTCs).
+- Also make sure that current_dir and scene_name are filled.
+- Of course, make sure that each sensor has data (is post processed) in your PreonLab scene, at least during activity.
