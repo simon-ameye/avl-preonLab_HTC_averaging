@@ -1,12 +1,12 @@
 # PreonLab-HTC-averaging
 This simple Python script will average your PreonLab heat transfer and HTC for E-motor, engine (and everything that rotates) simulations.
-This is useful if you want to do an external study of heat transfers in a third party tool
+This is useful if you want to do an external study of heat transfers in a third party tool.
 
 It will automaticaly do the averaging of heat flux sensors that :
 - Are linked to a sensor plane using sensor plane temperature (We want global HTCs)
 - Have keyframed "behavior"
 
-It will detect active frames and will do the averaging of all those frames
+It will detect active frames and will do the averaging of all those frames.
 And it will then create a CSV file for each sensor.
 
 It will build a CSV file like :
