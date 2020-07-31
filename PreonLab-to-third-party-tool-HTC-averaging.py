@@ -11,27 +11,18 @@ simon.ameye@avl.com
 
 #Make sure HF sensors activity is on for the last rotation and inactive outside
 #Make sure the HF sensors are linked with MeasuredScalarValue with a reference sensor plane
-#Also make sure that current_dir and scene_name are filled bellow
 #Of course, make sure that each sensor has data (is post processed) in your PreonLab scene
 
 
 import preonpy
 import numpy
-#import glob
+import glob
 #import matplotlib.pyplot as plt
 #from mpl_toolkits.mplot3d import Axes3D
 
-
-
-#current_dir = "//frchtwd311130/c$/Data/PREONLAB/VALEO_electrical_system/2020_preonlab_benchmark/02_E-motor_Simulation/Simulation/M24/MAGNA3_WEEK25_to_export"
-#scene_name = "ValeoE-motor_rename.prscene"
-
-current_dir = "//frchtwd311130/c$/Data/PREONLAB/VALEO_electrical_system/2020_preonlab_benchmark/02_E-motor_Simulation/Simulation/M24/MAGNA3_WEEK25_to_export"
-scene_name = "ValeoE-motor_rename.prscene"
-
 #Load file. If several are available, only the first one will be loaded !
-#File = glob.glob('*.prscene')
-s = preonpy.Scene(current_dir + "/" + scene_name)
+File = glob.glob('*.prscene')
+s = preonpy.Scene(File[0])
 
 #Find names of heat flux sensors in the scene
 HeatFluxSensors = []
@@ -135,7 +126,7 @@ for HeatFluxSensor in HeatFluxSensors :
             print("Writing " + HeatFluxSensor.name + " data!")
             NAMES = numpy.array(['X','Y','Z','REF_TEMP','CONV_HTC','HEAT_FLUX'])
             result = numpy.vstack((NAMES,numpy.transpose(numpy.array([x,y,z,ref_temp,HTC,HeatFlux]))))
-            numpy.savetxt((current_dir + "/" + HeatFluxSensor.name + "_AVG.csv"), result, delimiter="," , fmt="%s")
+            numpy.savetxt((HeatFluxSensor.name + "_AVG.csv"), result, delimiter="," , fmt="%s")
             print("Done writing " + HeatFluxSensor.name + " data!")
 
 print("Done!)")
