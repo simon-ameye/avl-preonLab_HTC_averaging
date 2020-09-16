@@ -11,7 +11,6 @@ simon.ameye@avl.com
 
 #Make sure HF sensors activity is on for the last rotation and inactive outside
 #Make sure the HF sensors are linked with MeasuredScalarValue with a reference sensor plane
-#Also make sure that current_dir and scene_name are filled bellow
 #Of course, make sure that each sensor has data (is post processed) in your PreonLab scene
 
 
@@ -19,13 +18,10 @@ import preonpy
 import numpy
 import glob
 
-#current_dir = "//frchtwd311130/c$/Data/PREONLAB/VALEO_electrical_system/2020_preonlab_benchmark/02_E-motor_Simulation/Simulation/M24/MAGNA3_WEEK25_to_export"
-#scene_name = "ValeoE-motor_rename.prscene"
-
-#current_dir = "//frchtwd311130/c$/Data/PREONLAB/VALEO_electrical_system/2020_preonlab_benchmark/02_E-motor_Simulation/Simulation/M24/MAGNA3_WEEK25_to_export"
-#scene_name = "ValeoE-motor_rename.prscene"
+#User parameters
 header = "SPATIAL\n1.0\tscale_xyz\n0.0\ttrans_x\n0.0\ttrans_y\n0.0\ttrans_z\nx\trot_axis\n0.0\trot_angle\n"
 
+#Code
 def addheader(filename):
     #Add the CONVERGE style header
     f = open(filename,'r+')
@@ -94,7 +90,6 @@ def keys_to_frames(s, keys_frames, keys_val):
 
 #Load file. If several are available, only the first one will be loaded !
 File = glob.glob('*.prscene')[0]
-#s = preonpy.Scene(current_dir + "/" + scene_name)
 s = preonpy.Scene(File)
 
 HeatFluxSensors = find_heat_flux_sensors(s)
@@ -113,8 +108,6 @@ for HeatFluxSensor in HeatFluxSensors :
         keys_times = [key[0] for key in keys] 
         keys_frames = [preonpy.to_frame(key_time, scene=s) for key_time in keys_times]
         keys_val = [1 if i=='active' else 0 for i in [key[1] for key in keys]]
-        
-
         SensorActiveFrames = keys_to_frames(s, keys_frames, keys_val)
         if len(SensorActiveFrames) == 0 :
             print(HeatFluxSensor.name + " Is never active and will be ignored !")   
@@ -127,7 +120,6 @@ for HeatFluxSensor in HeatFluxSensors :
             #with Solid.particle_buffers() as buffers:
             xyz             = numpy.array(HeatFluxSensor.sensor_buffers(True)["Position"], copy=True)
             Surface_Area    = numpy.array(HeatFluxSensor.sensor_buffers(True)["SurfaceArea"], copy=True)
-
             print("Let's parse " + HeatFluxSensor.name + " data!")
             Size_Of_Vals = len(xyz[:,0])
             HTCHeatFlux = average_heat_flux(s, SensorActiveFrames, HeatFluxSensor, Size_Of_Vals)
@@ -139,15 +131,8 @@ for HeatFluxSensor in HeatFluxSensors :
             print("Writing " + HeatFluxSensor.name + " data!")
             NAMES = numpy.array(['x','y','z','REF_TEMP','CONV_HTC','HEAT_FLUX'])
             result = numpy.vstack((NAMES,numpy.concatenate([xyz, ref_temp, HTCHeatFlux], axis = 1)))
-#            filename = current_dir + "/" + HeatFluxSensor.name + "_AVG.csv"
             filename = HeatFluxSensor.name + "_AVG.csv"
             numpy.savetxt(filename, result, delimiter="," , fmt="%s")
             print("Done writing " + HeatFluxSensor.name + " data!")
             addheader(filename)
 print("Done!)")
-#Show mean heat flux
-#fig = plt.figure()
-#ax = fig.add_subplot(111, projection='3d')
-#pnt3d = ax.scatter3D(x, y, z, c=HTC, s=0.05)
-#cbar=plt.colorbar(pnt3d)
-#plt.show()
