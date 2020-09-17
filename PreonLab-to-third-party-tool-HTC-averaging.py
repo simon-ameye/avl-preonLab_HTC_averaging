@@ -12,6 +12,7 @@ simon.ameye@avl.com
 #Make sure HF sensors activity is on for the last rotation and inactive outside
 #Make sure the HF sensors are linked with MeasuredScalarValue with a reference sensor plane
 #Of course, make sure that each sensor has data (is post processed) in your PreonLab scene
+#Please launch this code next to your .prescene file. If several are available, only the first one will be loaded !
 
 
 import preonpy
@@ -56,7 +57,7 @@ def find_heat_flux_sensors(s):
         if obj.type == "Heat flux sensor":
             HeatFluxSensors.append(obj)
             print(obj_name + " is Heat flux sensor")
-            return HeatFluxSensors
+    return HeatFluxSensors
         
 def average_heat_flux(s, SensorActiveFrames, HeatFluxSensor, Size_Of_Vals):
     #Initialize Vals
