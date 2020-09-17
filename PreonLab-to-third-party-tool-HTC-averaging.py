@@ -64,7 +64,7 @@ def average_heat_flux(s, SensorActiveFrames, HeatFluxSensor, Size_Of_Vals):
     HeatFlux = numpy.zeros(Size_Of_Vals)
     HTC = numpy.zeros(Size_Of_Vals)
     for frame in SensorActiveFrames:
-        print("Parsing frame " + str(frame) + "in a list of " + str(len(SensorActiveFrames)) + " frames")
+        print("Parsing frame " + str(frame) + " in a list of " + str(len(SensorActiveFrames)) + " frames")
         #Set current frame    
         s.load_frame(frame)
         #Find values in buffer
