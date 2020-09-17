@@ -75,8 +75,8 @@ def average_heat_flux(s, SensorActiveFrames, HeatFluxSensor, Size_Of_Vals):
         HTC = HTC + (HTC_buffer/len(SensorActiveFrames))
     return numpy.array([HTC, HeatFlux]).T
 
-def keys_to_frames(s, keys_frames, keys_val):
-    #This will convert KeyFrames into a list of frames where sensor is active
+def keyframes_to_active_frames(s, keys_frames, keys_val):
+    #This will convert KeyFrames into a list of frames where object is active
     Frames = numpy.arange(preonpy.to_frame(s.get_statistic_max("Time"), scene=s)+1)
     Activity = numpy.zeros(len(Frames))
     Activity[0] = keys_val[0]
@@ -87,6 +87,14 @@ def keys_to_frames(s, keys_frames, keys_val):
             else:
                 Activity[i] = Activity[i-1]
     return Frames[Activity==1]
+
+def find_object_active_frames(s, obj):
+    #Find Heat Flux object activity frames
+    keys = obj.get_keyframes("behavior")
+    keys_times = [key[0] for key in keys] 
+    keys_frames = [preonpy.to_frame(key_time, scene=s) for key_time in keys_times]
+    keys_val = [1 if i=='active' else 0 for i in [key[1] for key in keys]]
+    return keyframes_to_active_frames(s, keys_frames, keys_val)
 
 #Load file. If several are available, only the first one will be loaded !
 File = glob.glob('*.prscene')[0]
@@ -102,13 +110,7 @@ for HeatFluxSensor in HeatFluxSensors :
         #Find temperature reference sensor plane, if any (only the first one is considered !)
         SensorPlane = HeatFluxSensor.get_connected_objects("SensorPlaneTemperature", False)[0]
         print(HeatFluxSensor.name + " gets its reference temperature from " + SensorPlane.name)
-    
-        #Find Heat Flux sensor activity frames
-        keys = HeatFluxSensor.get_keyframes("behavior")
-        keys_times = [key[0] for key in keys] 
-        keys_frames = [preonpy.to_frame(key_time, scene=s) for key_time in keys_times]
-        keys_val = [1 if i=='active' else 0 for i in [key[1] for key in keys]]
-        SensorActiveFrames = keys_to_frames(s, keys_frames, keys_val)
+        SensorActiveFrames = find_object_active_frames(s, HeatFluxSensor)
         if len(SensorActiveFrames) == 0 :
             print(HeatFluxSensor.name + " Is never active and will be ignored !")   
         else : 
@@ -117,7 +119,6 @@ for HeatFluxSensor in HeatFluxSensors :
 
             #Find positions 
             s.load_frame(0)
-            #with Solid.particle_buffers() as buffers:
             xyz             = numpy.array(HeatFluxSensor.sensor_buffers(True)["Position"], copy=True)
             Surface_Area    = numpy.array(HeatFluxSensor.sensor_buffers(True)["SurfaceArea"], copy=True)
             print("Let's parse " + HeatFluxSensor.name + " data!")
